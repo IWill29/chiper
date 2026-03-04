@@ -26,14 +26,37 @@ class ChirpController extends Controller
               'message.required' => 'The message field needs to be filled out.',
               'message.max' => 'Message must be 255 or less characters long.', 
         ]);
-        //Izveido jaunu "chirp" ierakstu datubāzē, izmantojot validētos datus
-        \App\Models\Chirp::create([
-
-            'message' => $validated['message'],
-            'user_id' => null,
-        ]);
 
         // Pāradresē lietotāju atpakaļ uz sākumlapu
         return redirect ('/') -> with('success', 'Chirp created successfully!');
+    }
+
+
+    public function edit(Chirp $chirp)
+    {
+        return view('chirps.edit',compact('chirp'));
+    }
+
+    public function update(Request $request, Chirp $chirp)
+    {   
+        if ($request->user()->cannot('update', $chirp)) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+
+        $chirp->update($validated);
+
+        return redirect('/')->with('success', 'Chirp updated successfully!');
+
+    }
+
+    public function destroy(Chirp $chirp)
+    {
+        $chirp->delete();
+
+        return redirect('/')->with('success', 'Chirp deleted successfully!');
     }
 }
