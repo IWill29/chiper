@@ -16,11 +16,17 @@
                         <textarea
                             name="message"
                             placeholder="What's on your mind?"
-                            class="textarea textarea-bordered w-full resize-none"
+                            class="textarea textarea-bordered w-full resize-none @error('message') textarea-error @enderror"
                             rows="4"
                             maxlength="255"
                             required
-                        ></textarea>
+                        >{{ old('message') }}</textarea>
+
+                        @error('message')
+                           <div class="label">
+                                <span class="label-text-alt text-error">{{ $message }}</span> 
+                           </div>
+                        @enderror
                     </div>
 
                     <div class="mt-4 flex items-center justify-end">
@@ -36,7 +42,7 @@
         <div class="space-y-4 mt-8">
             @forelse ($chirps as $chirp)
                 <x-chirp :chirp="$chirp" />
-            @empty
+             @empty
                 <div class="hero py-12">
                     <div class="hero-content text-center">
                         <div>
