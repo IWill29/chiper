@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Chirp;
 
+
 class ChirpController extends Controller
 {
     public function index()
@@ -27,6 +28,8 @@ class ChirpController extends Controller
               'message.max' => 'Message must be 255 or less characters long.', 
         ]);
 
+        auth()->user()->chirps()->create($validated);
+
         // Pāradresē lietotāju atpakaļ uz sākumlapu
         return redirect ('/') -> with('success', 'Chirp created successfully!');
     }
@@ -34,6 +37,8 @@ class ChirpController extends Controller
 
     public function edit(Chirp $chirp)
     {
+        $this->authorize('update', $chirp);
+        
         return view('chirps.edit',compact('chirp'));
     }
 
